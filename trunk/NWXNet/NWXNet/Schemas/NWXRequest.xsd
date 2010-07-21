@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<xs:schema targetNamespace="http://navlost.eu/Request" elementFormDefault="qualified" xmlns="http://navlost.eu/Request" xmlns:mstns="http://tempuri.org/XMLSchema.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:element name="nwx">
+    <xs:complexType>
+      <xs:all>
+        <xs:element name="user" type="UserSection" minOccurs="0"/>
+        <xs:element name="application" type="ApplicationSection" minOccurs="0" />
+        <xs:element name="Request" type="RequestSection" />
+      </xs:all>
+      <xs:attribute name="version" use="optional" type="Version" />
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:complexType name="UserSection">
+    <xs:attribute name="id" use="required" type="xs:string" />
+    <xs:attribute name="token" use="required" type="xs:string"/>
+    <xs:attribute name="timestamp" use="required" type="Timestamp"/>
+  </xs:complexType>
+
+  <xs:complexType name="ApplicationSection">
+    <xs:attribute name="name" use="required" type="xs:string" />
+    <xs:attribute name="instance" use="required" type="xs:int" />
+    <xs:attribute name="token" use="required" type="xs:string"/>
+    <xs:attribute name="timestamp" use="required" type="Timestamp"/>
+  </xs:complexType>
+
+  <xs:complexType name="RequestSection">
+    <xs:choice minOccurs="1" maxOccurs="unbounded">
+      <xs:element name="AvailableEpochs" type="Blank" />
+      <xs:element name="AvailableLevels" type="Blank" />
+      <xs:element name="AvailableGeomagModels" type="Blank" />
+      <xs:element name="Wind" type="WindRequest" />
+      <xs:element name="Metar" type="MetarRequest" />
+    </xs:choice>
+    <xs:attribute name="id" use="optional" type="xs:string" />
+  </xs:complexType>
+
+  <xs:complexType name="WindRequest">
+    <xs:attribute name="id" use="optional" type="xs:string" />
+    <xs:attribute name="p" use="required" type="LatLon"/>
+    <xs:attribute name="z" use="required" type="xs:int" />
+    <xs:attribute name="u" use="required" type="Unit" />
+    <xs:attribute name="e" use="required" type="Timestamp" />
+  </xs:complexType>
+
+  <xs:complexType name="MetarRequest">
+    <xs:attribute name="maxage" use="optional" type="xs:int" />
+    <xs:attribute name="count" use="optional" type="xs:int" />
+    <xs:attribute name="icao" use="optional" type="xs:string" />
+    <xs:attribute name="p" use="optional" type="LatLon" />
+  </xs:complexType>
+
+  <xs:simpleType name="Unit">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="F|A|S|M"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:simpleType name="LatLon">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="^(-?(\d|[0-8]\d|90)\.\d+),(-?(\d{1,2}|1[0-7]\d|180)\.\d+)$" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="Blank">
+    <xs:restriction base="xs:string">
+      <xs:length value="0"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:simpleType name="Timestamp">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="^(19|20)\d\d-(0[1-9]|[12][0-9]|3[01])-(0[1-9]|1[012]) (([0-1]?[0-9])|([2][0-3])):([0-5]?[0-9]):([0-5]?[0-9])$"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="Version">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="^(\d+\.)(\d+\.)(\d+)$" />
+    </xs:restriction>
+  </xs:simpleType>
+  
+</xs:schema>
