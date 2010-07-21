@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<nwx version="0.3.5" xmlns="http://navlost.eu/Request">
+  <application name="name1" instance="1" token="token1" timestamp="2010-15-10 13:59:30" />
+  <user id="id1" token="token1" timestamp="2010-15-10 13:59:30" />
+  <Request>
+    <AvailableEpochs/>
+    <AvailableLevels/>
+    <Wind p="-5.032,-180.0123" z="120" u="F" e="2010-15-10 13:59:30"/>
+    <Metar icao="CYYC"/>
+  </Request>
+</nwx>

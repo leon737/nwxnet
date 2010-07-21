@@ -1,0 +1,92 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{EF0C5DF6-E216-43B8-91D3-C3B9682FCBEC}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>NWXNet</RootNamespace>
+    <AssemblyName>NWXNet</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Altitude.cs" />
+    <Compile Include="AltitudeUnit.cs" />
+    <Compile Include="Requests\Available.cs" />
+    <Compile Include="Responses\AvailableEpochsResponse.cs" />
+    <Compile Include="Responses\AvailableLevelsResponse.cs" />
+    <Compile Include="Requests\Epochs.cs" />
+    <Compile Include="Exceptions\NWXClientException.cs" />
+    <Compile Include="Exceptions\NWXServerException.cs" />
+    <Compile Include="HttpCommunicationHandler.cs" />
+    <Compile Include="INWXCommunicationHandler.cs" />
+    <Compile Include="INWXSerializer.cs" />
+    <Compile Include="Requests\IRequestData.cs" />
+    <Compile Include="Responses\IResponseData.cs" />
+    <Compile Include="LatLon.cs" />
+    <Compile Include="Requests\Levels.cs" />
+    <Compile Include="Requests\METAR.cs" />
+    <Compile Include="Responses\METARResponse.cs" />
+    <Compile Include="NWX.cs" />
+    <Compile Include="NWXXmlSerializer.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Requests\Request.cs" />
+    <Compile Include="Requests\RequestTypes.cs" />
+    <Compile Include="Responses\Response.cs" />
+    <Compile Include="Requests\Wind.cs" />
+    <Compile Include="Responses\WindResponse.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Schemas\NWXRequest.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Schemas\NWXResponse.xsd">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Schemas\NWXRequest.xml" />
+    <Content Include="Schemas\NWXResponse.xml">
+      <SubType>Designer</SubType>
+    </Content>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

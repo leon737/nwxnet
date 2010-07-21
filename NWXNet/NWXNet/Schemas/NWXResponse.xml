@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<nwx version="0.3.5" xmlns="http://navlost.eu/Response">
+  <Response>
+    <AvailableEpochs>
+      <epoch>2010-15-10 13:59:30</epoch>
+      <epoch>2010-12-10 13:39:30</epoch>
+    </AvailableEpochs>
+    <AvailableLevels>
+      <level u="hPa">3232</level>
+    </AvailableLevels>
+    <Wind p="-5.032,-180.0123" z="120" u="F" e="2010-15-10 13:59:30">
+      <dir>123.323</dir>
+      <speed>5234.323</speed>
+    </Wind>
+    <Metar p="-5.032,-180.0123" icao="CYYC">
+      <report epoch="2010-15-10 13:59:30">
+        <![CDATA[LFLL 072100Z 14003KT 9999 SCT040 BKN060 11/09 Q1019 NOSIG]]>
+      </report>
+    </Metar>
+  </Response>
+</nwx>
