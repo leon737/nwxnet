@@ -51,10 +51,10 @@ namespace NWXNet.Exceptions
                 var sb = new StringBuilder();
                 foreach (var serverError in Errors)
                 {
-                    if (serverError.ErrorCode != 0)
+                    if (!string.IsNullOrEmpty(serverError.ErrorCode))
                     {
                         sb.Append("Error code: ");
-                        sb.AppendLine(serverError.ErrorCode.ToString());
+                        sb.AppendLine(serverError.ErrorCode);
                     }
                     sb.Append(serverError.Message);
                 }
@@ -65,7 +65,7 @@ namespace NWXNet.Exceptions
 
     public class ServerError
     {
-        public int ErrorCode { get; set; }
+        public string ErrorCode { get; set; }
         public string Message { get; set; }
 
 
@@ -79,26 +79,33 @@ namespace NWXNet.Exceptions
             Message = message;
         }
 
-        public ServerError(int errorCode, string message)
+        public ServerError(string errorCode, string message)
         {
             ErrorCode = errorCode;
             Message = message;
         }
 
-        public override bool Equals(object obj)
+        public bool Equals(ServerError other)
         {
-            var compareTo = obj as ServerError;
-            return compareTo == null ? false : (ErrorCode == compareTo.ErrorCode) && (Message.Equals(compareTo.Message));
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return Equals(other.ErrorCode, ErrorCode) && Equals(other.Message, Message);
         }
 
-        public bool Equals(ServerError compareTo)
+        public override bool Equals(object obj)
         {
-            return compareTo == null ? false : (ErrorCode == compareTo.ErrorCode) && (Message.Equals(compareTo.Message));
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != typeof (ServerError)) return false;
+            return Equals((ServerError) obj);
         }
 
         public override int GetHashCode()
         {
-            return ErrorCode ^ Message.GetHashCode();
+            unchecked
+            {
+                return ((ErrorCode != null ? ErrorCode.GetHashCode() : 0) * 397) ^ (Message != null ? Message.GetHashCode() : 0);
+            }
         }
     }
 }

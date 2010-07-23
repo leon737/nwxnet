@@ -100,6 +100,33 @@ namespace NWXNet.UnitTests
         }
 
         [Test]
+        public void Deserialize_AvailableGeoMagModelsData_GeneratesProperObject()
+        {
+            string xml =
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<nwx version=\"0.3.5\"><Response expires=\"2010-07-19 18:20:00\"><AvailableGeomagModels><GeomagModel><name>WMM2010</name><epoch type=\"base\">2010</epoch><epoch type=\"first\">2010</epoch><epoch type=\"last\">2015</epoch><resolution type=\"lat\" u=\"deg\">0.5</resolution><resolution type=\"lon\" u=\"deg\">0.5</resolution></GeomagModel></AvailableGeomagModels></Response></nwx>";
+
+            Response response = Serializer.Deserialize(xml);
+            TestResponse(response);
+
+            var responseData = response.All<AvailableGeoMagModelsResponse>();
+
+            Assert.That(responseData, Is.Not.Null, "Dataset for response was null");
+            Assert.That(responseData, Is.InstanceOf<AvailableGeoMagModelsResponse[]>(), "AvailableEpochs array was not returned (wrong type).");
+
+            var data = responseData[0];
+            Assert.That(data, Is.Not.Null, "Empty dataset was returned.");
+
+            var model = data.Models[0];
+            Assert.That(model, Is.Not.Null, "No geomag models were added.");
+            Assert.That(model.Name, Is.EqualTo("WMM2010"), "Model name not properly set.");
+            Assert.That(model.BaseGridYear, Is.EqualTo(2010), "Base grid year not properly set.");
+            Assert.That(model.FirstValidYear, Is.EqualTo(2010), "First valid year not properly set.");
+            Assert.That(model.LastValidYear, Is.EqualTo(2015), "Last valid year not properly set.");
+            Assert.That(model.LatitudeResolution, Is.EqualTo(0.5), "Latitude resolution not properly set.");
+            Assert.That(model.LongitudeResolution, Is.EqualTo(0.5), "Longitude resolution not properly set.");
+        }
+
+        [Test]
         public void Deserialize_WindData_GeneratesProperObject()
         {
             string xml =
@@ -174,7 +201,7 @@ namespace NWXNet.UnitTests
             string xml =
                 "<nwx version=\"0.3.5\"><Response id=\"NWXNet1.0.0\"><error code=\"7\">Required attribute missing</error></Response></nwx>";
             Assert.That(() => Serializer.Deserialize(xml),
-                        Throws.InstanceOf<NWXServerException>().With.Property("Errors").EqualTo(new[] { new ServerError(7, "Required attribute missing") }).AsCollection);
+                        Throws.InstanceOf<NWXServerException>().With.Property("Errors").EqualTo(new[] { new ServerError("7", "Required attribute missing") }).AsCollection);
         }
 
         [Test]
@@ -274,9 +301,28 @@ namespace NWXNet.UnitTests
         }
 
         [Test]
+        public void Serialize_AvailableGeoMagModelsData_GeneratesProperXml()
+        {
+            Request request = NWX.Request.For(Available.GeoMagModels);
+            string xml = Serializer.Serialize(request);
+            XElement nwx = XElement.Load(new StringReader(xml));
+
+            Assert.That(nwx, Is.Not.Null);
+            Assert.That(nwx.Attribute("version"), Is.Not.Null);
+            Assert.That(nwx.Attribute("version").Value, Is.EqualTo("0.3.5"));
+
+            XElement req = nwx.Element("Request");
+            Assert.That(req, Is.Not.Null);
+
+            XElement geomag = req.Element("AvailableGeomagModels");
+            Assert.That(geomag, Is.Not.Null);
+            Assert.That(geomag.Value, Is.Null.Or.Empty);
+        }
+
+        [Test]
         public void Serialize_WindData_GeneratesProperXml()
         {
-            Request request = NWX.Request.For(Wind.At("-50,65", 240, AltitudeUnit.ImperialFlightLevel, DateTime.Parse("2010-07-12 16:00:00")).WithId("testid"));
+            Request request = NWX.Request.For(Wind.For("-50,65", 240, AltitudeUnit.ImperialFlightLevel, DateTime.Parse("2010-07-12 16:00:00")).WithId("testid"));
             string xml = Serializer.Serialize(request);
             XElement nwx = XElement.Load(new StringReader(xml));
 
@@ -305,6 +351,102 @@ namespace NWXNet.UnitTests
 
             Assert.That(wind.Attribute("id"), Is.Not.Null);
             Assert.That(wind.Attribute("id").Value, Is.EqualTo("testid"));
+        }
+
+        [Test]
+        public void Serialize_ChartData_GeneratesProperXml()
+        {
+            Request request =
+                NWX.Request.For(Chart.For("30,-20", "65,35", 700, DateTime.Parse("2010-07-22 21:00:00"), 800, 600));
+
+            string xml = Serializer.Serialize(request);
+            XElement nwx = XElement.Load(new StringReader(xml));
+
+            Assert.That(nwx, Is.Not.Null);
+            Assert.That(nwx.Attribute("version"), Is.Not.Null);
+            Assert.That(nwx.Attribute("version").Value, Is.EqualTo("0.3.5"));
+
+            XElement req = nwx.Element("Request");
+            Assert.That(req, Is.Not.Null);
+
+            XElement chart = req.Element("Chart");
+            Assert.That(chart, Is.Not.Null);
+            Assert.That(chart.Value, Is.Null.Or.Empty);
+
+            Assert.That(chart.Attribute("x"), Is.Not.Null);
+            Assert.That(chart.Attribute("x").Value, Is.EqualTo("800"));
+
+            Assert.That(chart.Attribute("y"), Is.Not.Null);
+            Assert.That(chart.Attribute("y").Value, Is.EqualTo("600"));
+
+            Assert.That(chart.Attribute("z"), Is.Not.Null);
+            Assert.That(chart.Attribute("z").Value, Is.EqualTo("700"));
+
+            Assert.That(chart.Attribute("e"), Is.Not.Null);
+            Assert.That(chart.Attribute("e").Value, Is.EqualTo(DateTime.Parse("2010-07-22 21:00:00").ToNWXString()));
+
+            Assert.That(chart.Attribute("lat0"), Is.Not.Null);
+            Assert.That(chart.Attribute("lat0").Value, Is.EqualTo("30"));
+
+            Assert.That(chart.Attribute("lat1"), Is.Not.Null);
+            Assert.That(chart.Attribute("lat1").Value, Is.EqualTo("65"));
+
+            Assert.That(chart.Attribute("lon0"), Is.Not.Null);
+            Assert.That(chart.Attribute("lon0").Value, Is.EqualTo("-20"));
+
+            Assert.That(chart.Attribute("lon1"), Is.Not.Null);
+            Assert.That(chart.Attribute("lon1").Value, Is.EqualTo("35"));
+        }
+
+        [Test]
+        public void Serialize_ApplicationAuthentication_GeneratesProperXml()
+        {
+            NWX.Authenticator = new ApplicationAuthenticator("nwxnet", 0, "2ea4d9f6f80bae06a098c47c39c28b69ae4e3d12");
+            var request = NWX.Request.For(METAR.ForICAO("CYYC"));
+
+            string xml = Serializer.Serialize(request);
+            XElement nwx = XElement.Load(new StringReader(xml));
+
+            Assert.That(nwx, Is.Not.Null);
+            Assert.That(nwx.Attribute("version"), Is.Not.Null);
+            Assert.That(nwx.Attribute("version").Value, Is.EqualTo("0.3.5"));
+
+            XElement auth = nwx.Element("application");
+
+            Assert.That(auth, Is.Not.Null);
+            Assert.That(auth.Attribute("name"), Is.Not.Null);
+            Assert.That(auth.Attribute("name").Value, Is.EqualTo("nwxnet"));
+            Assert.That(auth.Attribute("instance"), Is.Not.Null);
+            Assert.That(auth.Attribute("instance").Value, Is.EqualTo("0"));
+            Assert.That(auth.Attribute("token"), Is.Not.Null); // TODO: Is there any way to unit test the value?
+            Assert.That(auth.Attribute("timestamp"), Is.Not.Null);
+
+            NWX.Authenticator = null;
+        }
+
+        [Test]
+        public void Serialize_ApplicationAuthenticationThroughRequest_GeneratesProperXml()
+        {
+            var request =
+                NWX.Request.For(METAR.ForICAO("CYYC")).UsingAuthenticator(new ApplicationAuthenticator("nwxnet", 0,
+                                                                                                       "2ea4d9f6f80bae06a098c47c39c28b69ae4e3d12"));
+
+            string xml = Serializer.Serialize(request);
+            XElement nwx = XElement.Load(new StringReader(xml));
+
+            Assert.That(nwx, Is.Not.Null);
+            Assert.That(nwx.Attribute("version"), Is.Not.Null);
+            Assert.That(nwx.Attribute("version").Value, Is.EqualTo("0.3.5"));
+
+            XElement auth = nwx.Element("application");
+
+            Assert.That(auth, Is.Not.Null);
+            Assert.That(auth.Attribute("name"), Is.Not.Null);
+            Assert.That(auth.Attribute("name").Value, Is.EqualTo("nwxnet"));
+            Assert.That(auth.Attribute("instance"), Is.Not.Null);
+            Assert.That(auth.Attribute("instance").Value, Is.EqualTo("0"));
+            Assert.That(auth.Attribute("token"), Is.Not.Null); // TODO: Is there any way to unit test the value?
+            Assert.That(auth.Attribute("timestamp"), Is.Not.Null);
         }
 
         [Test]

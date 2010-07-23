@@ -2,9 +2,10 @@
 {
     public enum AltitudeUnit
     {
-        ImperialFlightLevel,
-        ImperialAltitude,
-        MetricFlightLevel,
-        MetricAltitude
+        None,
+        ImperialFlightLevel = 'F',
+        ImperialAltitude = 'A',
+        MetricFlightLevel = 'S',
+        MetricAltitude = 'M'
     }
 }

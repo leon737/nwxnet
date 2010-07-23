@@ -11,6 +11,7 @@ namespace NWXNet
     {
         private readonly INWXCommunicationHandler _communicationHandler;
         private readonly INWXSerializer _serializer;
+        private INWXAuthenticator _authenticator;
         private List<IRequestData> _data = new List<IRequestData>();
         private Version _version = new Version("0.3.5");
 
@@ -19,10 +20,17 @@ namespace NWXNet
         /// </summary>
         /// <param name="serializer">The serializer.</param>
         /// <param name="handler">The handler.</param>
-        public Request(INWXSerializer serializer, INWXCommunicationHandler handler)
+        /// <param name="authenticator">The authentication method, if any.</param>
+        public Request(INWXSerializer serializer, INWXCommunicationHandler handler, INWXAuthenticator authenticator)
         {
             _serializer = serializer;
             _communicationHandler = handler;
+            _authenticator = authenticator;
+        }
+
+        public INWXAuthenticator Authenticator
+        {
+            get { return _authenticator; }
         }
 
         /// <summary>
@@ -119,6 +127,12 @@ namespace NWXNet
             string rawXml = SerializeRequest();
             string responseString = SendRequest(rawXml);
             return DeserializeResponse(responseString);
+        }
+
+        public Request UsingAuthenticator(INWXAuthenticator authenticator)
+        {
+            _authenticator = authenticator;
+            return this;
         }
     }
 }

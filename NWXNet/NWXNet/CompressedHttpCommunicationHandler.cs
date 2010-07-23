@@ -1,19 +1,19 @@
-﻿using System.IO;
+using System;
+using System.IO;
 using System.IO.Compression;
 using System.Net;
 using System.Text;
 
 namespace NWXNet
 {
-    public class HttpCommunicationHandler : INWXCommunicationHandler
+    public class CompressedHttpCommunicationHandler : INWXCommunicationHandler
     {
-        #region Implementation of INWXCommunicationHandler
-
         public string Send(string data)
         {
             WebRequest request = WebRequest.Create("http://navlost.eu/aero/nwx");
             request.Method = "POST";
             request.ContentType = "text/xml";
+            request.Headers.Add(HttpRequestHeader.AcceptEncoding, "gzip");
 
             byte[] bytes = Encoding.ASCII.GetBytes(data);
             Stream os = null;
@@ -25,7 +25,7 @@ namespace NWXNet
             }
             finally
             {
-                if(os != null)
+                if (os != null)
                     os.Close();
             }
 
@@ -34,11 +34,12 @@ namespace NWXNet
                 return null;
 
             Stream responseStream = response.GetResponseStream();
+            if (response.ContentEncoding.ToLower().Contains("gzip"))
+            {
+                responseStream = new GZipStream(responseStream, CompressionMode.Decompress);
+            }
             var sr = new StreamReader(responseStream, Encoding.Default);
             return sr.ReadToEnd().Trim();
         }
-
-        #endregion
     }
-
 }
