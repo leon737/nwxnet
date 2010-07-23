@@ -7,7 +7,18 @@
     {
         private static INWXSerializer _serializer = new NWXXmlSerializer();
 
-        private static INWXCommunicationHandler _communicationHandler = new HttpCommunicationHandler();
+        private static INWXCommunicationHandler _communicationHandler = new CompressedHttpCommunicationHandler();
+
+        private static INWXAuthenticator _authenticator;
+
+        /// <summary>
+        /// Authentication method to use - by default, no authentication is used.  Choose from ApplicationAuthenticator or (future) UserAuthenticator.
+        /// </summary>
+        /// <value>The authenticator.</value>
+        public static INWXAuthenticator Authenticator
+        {
+            set { _authenticator = value; }
+        }
 
         /// <summary>
         /// Initialize a new Request object.
@@ -15,7 +26,7 @@
         /// <value>The request.</value>
         public static Request Request
         {
-            get { return new Request(_serializer, _communicationHandler); }
+            get { return new Request(_serializer, _communicationHandler, _authenticator); }
         }
 
         /// <summary>

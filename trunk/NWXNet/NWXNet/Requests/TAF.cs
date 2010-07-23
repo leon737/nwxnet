@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 
 namespace NWXNet
 {
     /// <summary>
-    /// Represents a request for a METAR at a given ICAO or set of coordinates.
+    /// Represents a request for a TAF at a given ICAO or set of coordinates.
     /// </summary>
-    public class METAR : IRequestData
+    public class TAF : IRequestData
     {
         public string Icao { get; private set; }
 
@@ -15,55 +15,55 @@ namespace NWXNet
 
         public int MaxAge { get; private set; }
 
-        private METAR(string icao)
+        private TAF(string icao)
         {
             Icao = icao;
         }
 
-        private METAR(LatLon coords)
+        private TAF(LatLon coords)
         {
             Coordinates = coords;
         }
 
         /// <summary>
-        /// Create a METAR request for a specific ICAO.
+        /// Create a TAF request for a specific ICAO.
         /// </summary>
-        /// <param name="icao">The ICAO to retrieve METAR data for.</param>
-        /// <returns>New METAR request object.</returns>
-        public static METAR ForICAO(string icao)
+        /// <param name="icao">The ICAO to retrieve TAF data for.</param>
+        /// <returns>New TAF request object.</returns>
+        public static TAF ForICAO(string icao)
         {
-            return new METAR(icao);
+            return new TAF(icao);
         }
 
         /// <summary>
-        /// Create a METAR request for a specific latitude/longitude.
+        /// Create a TAF request for a specific latitude/longitude.
         /// </summary>
         /// <param name="coords">The latitude/longitude, in decimal format (xx.x,xx.x).</param>
-        /// <returns>New METAR request object.</returns>
-        public static METAR ForCoordinates(string coords)
+        /// <returns>New TAF request object.</returns>
+        public static TAF ForCoordinates(string coords)
         {
             return ForCoordinates(new LatLon(coords));
         }
 
         /// <summary>
-        /// Create a METAR request for a specific latitude/longitude.
+        /// Create a TAF request for a specific latitude/longitude.
         /// </summary>
         /// <param name="latitude">The latitude.</param>
         /// <param name="longitude">The longitude.</param>
-        /// <returns>New METAR request object.</returns>
-        public static METAR ForCoordinates(double latitude, double longitude)
+        /// <returns>New TAF request object.</returns>
+        public static TAF ForCoordinates(double latitude, double longitude)
         {
             return ForCoordinates(new LatLon(latitude, longitude));
         }
 
         /// <summary>
-        /// Create a METAR request for a specific latitude/longitude.
+        /// Create a TAF request for a specific latitude/longitude.
         /// </summary>
         /// <param name="coords">A LatLon object specifying the coordinates.</param>
-        /// <returns>New METAR request object.</returns>
-        public static METAR ForCoordinates(LatLon coords)
+        /// <returns>New TAF request object.</returns>
+        public static TAF ForCoordinates(LatLon coords)
         {
-            return new METAR(coords);
+            return new TAF(coords);
         }
 
         /// <summary>
@@ -71,7 +71,7 @@ namespace NWXNet
         /// </summary>
         /// <param name="count">The number of reports to retrieve.</param>
         /// <returns></returns>
-        public METAR Last(int count)
+        public TAF Last(int count)
         {
             Count = count;
             return this;
@@ -82,7 +82,7 @@ namespace NWXNet
         /// </summary>
         /// <param name="age">The maximum number of hours old that a retrieved report should be.</param>
         /// <returns></returns>
-        public METAR WithMaxAge(int age)
+        public TAF WithMaxAge(int age)
         {
             MaxAge = age;
             return this;
@@ -92,7 +92,7 @@ namespace NWXNet
 
         public RequestTypes Type
         {
-            get { return RequestTypes.METAR; }
+            get { return RequestTypes.TAF; }
         }
 
         public bool IsValid

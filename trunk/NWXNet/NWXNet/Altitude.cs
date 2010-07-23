@@ -1,6 +1,6 @@
 ﻿namespace NWXNet
 {
-    public class Altitude
+    public static class Altitude
     {
         public static string EnumToUnitCode(AltitudeUnit unit)
         {

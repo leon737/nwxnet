@@ -4,7 +4,10 @@
     {
         AvailableEpochs,
         AvailableLevels,
+        AvailableGeoMagModels,
         METAR,
-        Wind
+        Wind,
+        Chart,
+        TAF
     }
 }

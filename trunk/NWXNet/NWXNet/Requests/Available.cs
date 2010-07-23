@@ -1,4 +1,6 @@
-﻿namespace NWXNet
+﻿using System;
+
+namespace NWXNet
 {
     public static class Available
     {
@@ -10,6 +12,11 @@
         public static Levels Levels
         {
             get { return new Levels(); }
+        }
+
+        public static GeoMagModels GeoMagModels
+        {
+            get { return new GeoMagModels();}
         }
     }
 }
