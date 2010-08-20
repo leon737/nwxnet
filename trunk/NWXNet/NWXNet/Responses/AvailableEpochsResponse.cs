@@ -37,7 +37,7 @@ namespace NWXNet
                 DateTime closest = _epochs[0];
                 foreach (var time in Epochs)
                 {
-                    var tmp = (int)Math.Abs(DateTime.Now.Subtract(time).TotalSeconds);
+                    var tmp = (int)Math.Abs(DateTime.UtcNow.Subtract(time).TotalSeconds);
                     if (tmp < timeDiff)
                     {
                         timeDiff = tmp;

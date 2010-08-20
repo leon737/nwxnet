@@ -2,12 +2,12 @@
 {
     public class GeoMagModels : IRequestData
     {
-        public RequestTypes Type
+        RequestTypes IRequestData.Type
         {
             get { return RequestTypes.AvailableGeoMagModels; }
         }
 
-        public bool IsValid
+        bool IRequestData.IsValid
         {
             get { return true; }
         }

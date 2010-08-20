@@ -7,13 +7,13 @@ namespace NWXNet
     /// </summary>
     public class METAR : IRequestData
     {
-        public string Icao { get; private set; }
+        internal string Icao { get; private set; }
 
-        public LatLon Coordinates { get; private set; }
+        internal LatLon Coordinates { get; private set; }
 
-        public int Count { get; private set; }
+        internal int Count { get; private set; }
 
-        public int MaxAge { get; private set; }
+        internal int MaxAge { get; private set; }
 
         private METAR(string icao)
         {
@@ -90,12 +90,12 @@ namespace NWXNet
 
         #region Implementation of IRequestData
 
-        public RequestTypes Type
+        RequestTypes IRequestData.Type
         {
             get { return RequestTypes.METAR; }
         }
 
-        public bool IsValid
+        bool IRequestData.IsValid
         {
             get { return (Icao != null || Coordinates != null); }
         }

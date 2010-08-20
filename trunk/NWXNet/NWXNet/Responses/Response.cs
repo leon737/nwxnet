@@ -53,7 +53,9 @@ namespace NWXNet
         public T WithId<T>(string id) where T : IResponseData
         {
             IResponseData data;
-            if(Responses.TryGetValue(id, out data))
+            var responsesOfType = Responses.Where(r => r.Value.GetType() == typeof (T)).ToDictionary(r => r.Key,
+                                                                                                     r => r.Value);
+            if(responsesOfType.TryGetValue(id, out data))
             {
                 return (T) data;
             }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace NWXNet
 {
@@ -15,35 +16,39 @@ namespace NWXNet
             UpperRightCoordinates = upperRightCoordinates;
         }
 
-        public int Width { get; private set; }
-        public int Height { get; private set; }
-        public int Level { get; private set; }
-        public DateTime Epoch { get; private set; }
-        public LatLon LowerLeftCoordinates { get; private set; }
-        public LatLon UpperRightCoordinates { get; private set; }
+        internal int Width { get; private set; }
+        internal int Height { get; private set; }
+        internal int Level { get; private set; }
+        internal DateTime Epoch { get; private set; }
+        internal LatLon LowerLeftCoordinates { get; private set; }
+        internal LatLon UpperRightCoordinates { get; private set; }
 
         private List<string> _features;
-        public List<string> Features
+        internal List<string> Features
         {
             get { return _features ?? (_features = new List<string>()); }
-            private set { Features = value; }
+            private set { _features = value; }
         }
 
-        public RequestTypes Type
+        RequestTypes IRequestData.Type
         {
             get { return RequestTypes.Chart; }
         }
 
-        public bool IsValid
+        bool IRequestData.IsValid
         {
-            get { return true; }
+            get
+            {
+                return (Width != 0) && (Height != 0) && (Level != 0) && (LowerLeftCoordinates != null) &&
+                       (UpperRightCoordinates != null) && (Epoch != DateTime.MinValue) && Features.Any();
+            }
         }
 
         public string Id { get; private set; }
 
-        public bool MapLayout { get; private set; }
+        internal bool MapLayout { get; private set; }
 
-        public bool TransparentBackground { get; private set; }
+        internal bool TransparentBackground { get; private set; }
 
         public static Chart For(LatLon lowerLeftCoordinates, LatLon upperRightCoordinates, int level, DateTime epoch, int width, int height)
         {

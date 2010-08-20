@@ -41,7 +41,7 @@ namespace NWXNet.Exceptions
         public NWXServerException(string message, Exception inner)
             : base(message, inner)
         {
-
+            Errors.Add(new ServerError(message));
         }
 
         public override string Message
