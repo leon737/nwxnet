@@ -51,6 +51,7 @@
     <Compile Include="Requests\Chart.cs" />
     <Compile Include="Requests\GeoMagModels.cs" />
     <Compile Include="Requests\IChartFeature.cs" />
+    <Compile Include="Requests\SunRiseAndSet.cs" />
     <Compile Include="Requests\TAF.cs" />
     <Compile Include="Responses\AvailableEpochsResponse.cs" />
     <Compile Include="Responses\AvailableGeoMagModelsResponse.cs" />

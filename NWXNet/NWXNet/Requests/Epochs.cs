@@ -6,12 +6,12 @@ namespace NWXNet
     {
         #region Implementation of IRequestData
 
-        public RequestTypes Type
+        RequestTypes IRequestData.Type
         {
             get { return RequestTypes.AvailableEpochs; }
         }
 
-        public bool IsValid
+        bool IRequestData.IsValid
         {
             get { return true; }
         }

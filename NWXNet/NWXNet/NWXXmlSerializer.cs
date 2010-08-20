@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Xml;
 using System.Xml.Linq;
 using NWXNet.Exceptions;
 using System.Drawing;
@@ -38,6 +39,9 @@ namespace NWXNet
             return doc.ToString();
 
 
+
+
+
             //var doc = new XmlDocument();
             //doc.AppendChild(doc.CreateXmlDeclaration("1.0", "utf-8", null));
 
@@ -59,8 +63,16 @@ namespace NWXNet
         public Response Deserialize(string data)
         {
             var responseObject = new Response();
-
-            XElement doc = XElement.Load(new StringReader(data));
+            XElement doc;
+            try
+            {
+                doc = XElement.Load(new StringReader(data));
+            }
+            catch (XmlException ex)
+            {
+                throw new NWXServerException("Bad XML returned from server - see inner exception for details.", ex);
+            }
+            
 
             XAttribute version = doc.Attribute("version");
             Version docVersion;

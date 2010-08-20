@@ -8,6 +8,7 @@
         METAR,
         Wind,
         Chart,
-        TAF
+        TAF,
+        SunRiseAndSet
     }
 }

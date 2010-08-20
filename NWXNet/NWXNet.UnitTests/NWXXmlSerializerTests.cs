@@ -3,11 +3,12 @@ using System.IO;
 using System.Xml.Linq;
 using NUnit.Framework;
 using NWXNet.Exceptions;
+using NWXNet.Requests;
 
 namespace NWXNet.UnitTests
 {
     [TestFixture]
-    internal class XmlSerializerTests
+    internal class NWXXmlSerializerTests
     {
         private static readonly NWXXmlSerializer Serializer = new NWXXmlSerializer();
 
@@ -205,6 +206,27 @@ namespace NWXNet.UnitTests
         }
 
         [Test]
+        public void Deserialize_BadXml_ThrowsException()
+        {
+            string xml = "<nwx version\"0.3.5>";
+            Assert.That(() => Serializer.Deserialize(xml),
+                        Throws.InstanceOf<NWXServerException>().With.Property("Errors").EqualTo(new[]
+                                                                                                    {
+                                                                                                        new ServerError(null,
+                                                                                                            "Bad XML returned from server - see inner exception for details.")
+                                                                                                    }).And.InnerException.Not.Null);
+        }
+
+        [Test]
+        public void Serialize_BadObject_ThrowsException()
+        {
+            Request request = NWX.Request.For(METAR.ForICAO("CYYC"));
+            request.Version = null;
+
+            Assert.That(() => Serializer.Serialize(request), Throws.Exception);
+        }
+
+        [Test]
         public void Deserialize_ServerWarning_ResponseContainsWarning()
         {
             string xml =
@@ -396,6 +418,33 @@ namespace NWXNet.UnitTests
 
             Assert.That(chart.Attribute("lon1"), Is.Not.Null);
             Assert.That(chart.Attribute("lon1").Value, Is.EqualTo("35"));
+        }
+
+        [Test]
+        public void Serialize_SunRiseAndSetData_GeneratesProperXml()
+        {
+            Request request = NWX.Request.For(SunRiseAndSet.For("30,-20", DateTime.Parse("2010-07-22 21:00:00")));
+
+            string xml = Serializer.Serialize(request);
+            XElement nwx = XElement.Load(new StringReader(xml));
+
+            Assert.That(nwx, Is.Not.Null);
+            Assert.That(nwx.Attribute("version"), Is.Not.Null);
+            Assert.That(nwx.Attribute("version").Value, Is.EqualTo("0.3.5"));
+
+            XElement req = nwx.Element("Request");
+            Assert.That(req, Is.Not.Null);
+
+            XElement srss = req.Element("srss");
+            Assert.That(srss, Is.Not.Null);
+
+            XAttribute p = srss.Attribute("p");
+            Assert.That(p, Is.Not.Null);
+            Assert.That(p.Value, Is.EqualTo("30,-20"));
+
+            XAttribute e = srss.Attribute("e");
+            Assert.That(e, Is.Not.Null);
+            Assert.That(e.Value, Is.EqualTo(DateTime.Parse("2010-07-22 21:00:00").ToNWXString()));
         }
 
         [Test]

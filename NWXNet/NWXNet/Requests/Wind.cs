@@ -66,12 +66,12 @@ namespace NWXNet
 
         #region Implementation of IRequestData
 
-        public RequestTypes Type
+        RequestTypes IRequestData.Type
         {
             get { return RequestTypes.Wind; }
         }
 
-        public bool IsValid
+        bool IRequestData.IsValid
         {
             get { return (Coordinates != null) && (Altitude != 0) && (Unit != AltitudeUnit.None) && (Epoch != DateTime.MinValue); }
         }
